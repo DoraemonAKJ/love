@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cục zàn Làm vợ anh nhé! ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght=500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle, #fff0f3 0%, #ffccd5 100%);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Hiệu ứng cánh hoa rơi nhẹ nhàng */
+        .sakura {
+            position: absolute;
+            background-color: #ffb3c6;
+            border-radius: 100% 0 100% 100%;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Khung thiệp sang trọng */
+        .container {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 3px solid #dfb76c; 
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(217, 4, 41, 0.15), inset 0 0 20px rgba(223, 183, 108, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 480px;
+            width: 90%;
+            z-index: 10;
+            position: relative;
+        }
+
+        .img-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .img-container img {
+            width: 180px;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #7209b7; 
+            font-size: 2.6rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        p {
+            color: #555;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            font-weight: 500;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 90px;
+            position: relative;
+        }
+
+        button {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.15s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        #btn-yes {
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%);
+            color: white;
+            z-index: 5;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        #btn-yes:hover {
+            background: linear-gradient(135deg, #ff758f 0%, #ff85a1 100%);
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
+        }
+
+        #btn-no {
+            background-color: #adb5bd;
+            color: #495057;
+            z-index: 100;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2;
+            animation: floatUp 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.5) rotate(45deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="img-container">
+            <!-- Ảnh chú chó và mèo dễ thương ban đầu (dance.png) -->
+            <img id="status-img" src="image/tonton.jpg" alt="Cute Couple">
+        </div>
+        <h1 id="question">Công chúa của anh, đồng ý cưới anh nha? 💍❤️</h1>
+        <p id="sub-text">Mọi thứ đã sẵn sàng cho hạnh phúc của chúng ta. Em chỉ cần gật đầu thôi! Anh hứa sẽ che chở cho em suốt đời.</p>
+        
+        <div class="btn-group">
+            <button id="btn-yes" onclick="accepted()">ĐỒNG Ý! 🌹</button>
+            <button id="btn-no" onmouseover="flyAway()" onclick="flyAway()">Không đồng ý 😜</button>
+        </div>
+    </div>
+
+    <script>
+        const btnNo = document.getElementById('btn-no');
+        const btnYes = document.getElementById('btn-yes');
+        const question = document.getElementById('question');
+        const subText = document.getElementById('sub-text');
+        const img = document.getElementById('status-img');
+        
+        let yesScale = 1;
+        let isFirstHover = true;
+
+        // Tạo hiệu ứng cánh hoa đào rơi nền liên tục
+        function createSakura() {
+            const sakura = document.createElement('div');
+            customSakura(sakura);
+            document.body.appendChild(sakura);
+            setTimeout(() => { sakura.remove(); }, 6000);
+        }
+        function customSakura(sk) {
+            sk.classList.add('sakura');
+            sk.style.left = Math.random() * 100 + "vw";
+            sk.style.width = Math.random() * 10 + 8 + "px";
+            sk.style.height = sk.style.width;
+            sk.style.animationDuration = Math.random() * 3 + 4 + "s";
+        }
+        setInterval(createSakura, 300);
+
+        // Hàm xử lý "Bay mất xác" khi lia chuột trúng nút Không
+        function flyAway() {
+            if (isFirstHover) {
+                btnNo.style.position = 'absolute';
+                isFirstHover = false;
+            }
+
+            const padding = 120;
+            const maxX = window.innerWidth - btnNo.offsetWidth - padding;
+            const maxY = window.innerHeight - btnNo.offsetHeight - padding;
+            
+            let randomX = Math.floor(Math.random() * maxX);
+            let randomY = Math.floor(Math.random() * maxY);
+
+            if (randomX < padding) randomX = padding;
+            if (randomY < padding) randomY = padding;
+            
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+
+            // Phóng to nút Đồng Ý dần dần để tạo áp lực đáng yêu
+            yesScale += 0.25;
+            btnYes.style.transform = `scale(${yesScale})`;
+        }
+
+        // Hàm vỡ òa hạnh phúc khi bấm "ĐỒNG Ý"
+        function accepted() {
+            question.innerHTML = "Anh biết ngay mà! Yêu vợ nhất trên đời! 🥰💍🎉";
+            subText.innerHTML = "Chuẩn bị tinh thần để trở thành cô dâu lộng lẫy nhất thế gian nhé em ơi!";
+            
+            // Đổi sang ảnh ăn mừng tròn viền vàng của bạn (celebrate.png)
+            img.src = "celebrate.png";
+            img.style.borderRadius = "50.5%"; // Giữ đúng viền tròn của ảnh chúc mừng
+            
+            btnNo.style.display = 'none';
+            btnYes.style.transform = 'scale(1.2)';
+            btnYes.innerHTML = "Chụt Moahhh! 😘";
+            btnYes.onclick = null; 
+
+            // Phun trào hiệu ứng tim và hoa chúc mừng
+            setInterval(createHeart, 80);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            
+            const icons = ['❤️', '💖', '🌹', '💍', '🌸', '✨', '👑'];
+            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+            
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 2 + 1.5 + "s";
+            heart.style.fontSize = Math.random() * 25 + 15 + "px";
+            
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 3000);
+        }
+    </script>
+</body>
+</html>
